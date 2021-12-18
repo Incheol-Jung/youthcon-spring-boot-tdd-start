@@ -2,6 +2,7 @@ package com.youthcon.start.application;
 
 import com.youthcon.start.domain.Review;
 import com.youthcon.start.errors.DuplicateSendGiftException;
+import com.youthcon.start.errors.GiftApiInternalException;
 import com.youthcon.start.errors.ReviewNotFoundException;
 import com.youthcon.start.errors.SendGiftInternalException;
 import com.youthcon.start.infra.GiftApi;
@@ -28,19 +29,14 @@ public class ReviewService {
 
     @Transactional
     public Review sendGift(Long id) {
-        Review review = reviewRepository.findById(id)
-                .orElseThrow(() -> new ReviewNotFoundException("no review id : " + id));
-
-        if (review.getIsSent()){
-            throw new DuplicateSendGiftException("review id : " + id);
+        Review review = getById(id);
+        if(review.isSent()) {
+            throw new RuntimeException();
         }
-
-        if (!giftApi.send(review.getPhoneNumber())){
-            throw new SendGiftInternalException("review phoneNumber : " + review.getPhoneNumber());
+        if(!giftApi.send(review.getPhoneNumber())) {
+            throw new RuntimeException();
         }
-
         review.makeTrue();
-
         return review;
     }
 }

@@ -75,7 +75,7 @@ class AcceptanceTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
         // 실행
         .when()
-                .put("/reviews/1")
+                .put("/reviews/2")
         // 검증
         .then()
                 .statusCode(HttpStatus.OK.value())
